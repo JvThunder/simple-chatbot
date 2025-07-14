@@ -3,8 +3,7 @@
 python3 -m venv env
 env\Scripts\activate
 
-pip install django
-pip install djangorestframework
+pip install -r requirements.txt
 
 django-admin startproject tutorial
 python manage.py startapp chatbot
