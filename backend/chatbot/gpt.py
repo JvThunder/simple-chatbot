@@ -42,4 +42,9 @@ def gpt_call(query, chat_session_id):
         {"role": "assistant", "content": model_response}
     )
 
-    return chat_sessions_dict[chat_session_id]["message_history"]
+    return chat_sessions_dict[chat_session_id]["message_history"][1:]
+
+def get_chat_session_message_history(chat_session_id):
+    if chat_session_id not in chat_sessions_dict:
+        return {"error": "Chat session not found"}
+    return chat_sessions_dict[chat_session_id]["message_history"][1:]

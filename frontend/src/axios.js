@@ -27,6 +27,14 @@ const createChatSession = () => {
     return axiosInstance.post('create_chat_session/', {});
 }
 
+const getChatSession = (chatSessionId) => {
+    return axiosInstance.get('get_chat_session/', {
+        params: {
+            chat_session_id: chatSessionId
+        },
+    });
+}
+
 // Upload a .txt file along with an optional query
 // const uploadTxtFile = (query, file) => {
 //     const formData = new FormData();
@@ -44,6 +52,7 @@ const api = {
     testReceive,
     getGPTResponse,
     createChatSession,
+    getChatSession,
     // uploadTxtFile,
 };
 
