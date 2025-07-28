@@ -1,23 +1,45 @@
 import os
 import openai
 from dotenv import load_dotenv
+import uuid
 
 # Load environment variables from .env file
 load_dotenv()
 
-def gpt_call(query):
-    
-    # Set up your OpenAI client
-    client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = openai.OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+chat_sessions_dict = {}
+SYSTEM_PROMPT = """
+You are a helpful assistant that can answer questions and help with tasks. Follow the user's prompt instructions.
+"""
+
+def get_chat_session_id():
+    print("Creating chat session")
+    chat_session_id = str(uuid.uuid4())
+    chat_sessions_dict[chat_session_id] = {
+        "message_history": [
+            {"role": "system", "content": SYSTEM_PROMPT}
+        ],
+    }
+    return chat_session_id
+
+def gpt_call(query, chat_session_id):
+    if chat_session_id not in chat_sessions_dict:
+        return {"error": "Chat session not found"}
+
+    chat_sessions_dict[chat_session_id]["message_history"].append(
+        {"role": "user", "content": query}
+    )
 
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=[
-            {"role": "system", "content": "Follow the user's prompt instructions."},
-            {"role": "user", "content": query}
-        ],
+        messages=chat_sessions_dict[chat_session_id]["message_history"],
         max_tokens=1000,
         temperature=0.7,
     )
 
-    return response.choices[0].message.content
+    model_response = response.choices[0].message.content
+    chat_sessions_dict[chat_session_id]["message_history"].append(
+        {"role": "assistant", "content": model_response}
+    )
+
+    return chat_sessions_dict[chat_session_id]["message_history"]

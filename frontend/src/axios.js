@@ -23,8 +23,23 @@ const getGPTResponse = (query) => {
     return axiosInstance.post('gpt_call/', { "query": query }, {})
 }
 
+// Upload a .txt file along with an optional query
+const uploadTxtFile = (query, file) => {
+    const formData = new FormData();
+    formData.append('query', query);
+    formData.append('file', file);
+
+    return axiosInstance.post('gpt_call_with_files/', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
+
 const api = {
     testReceive,
+    getGPTResponse,
+    uploadTxtFile,
 };
 
 export default api; 
