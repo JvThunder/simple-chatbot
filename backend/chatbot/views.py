@@ -30,7 +30,7 @@ def chatbot_call(request):
             
             gpt_response = gpt_call(data["query"], data["chat_session_id"])
             return JsonResponse({
-                "message": gpt_response
+                "message": gpt_response[1:]
             })
     except Exception as e:
         print("Error:", e)

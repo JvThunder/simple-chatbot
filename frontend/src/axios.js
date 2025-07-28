@@ -19,27 +19,32 @@ const testReceive = () => {
     return axiosInstance.get('test/', {});
 };
 
-const getGPTResponse = (query) => {
-    return axiosInstance.post('gpt_call/', { "query": query }, {})
+const getGPTResponse = (query, chatSessionId) => {
+    return axiosInstance.post('gpt_call/', { "query": query, "chat_session_id": chatSessionId }, {})
+}
+
+const createChatSession = () => {
+    return axiosInstance.post('create_chat_session/', {});
 }
 
 // Upload a .txt file along with an optional query
-const uploadTxtFile = (query, file) => {
-    const formData = new FormData();
-    formData.append('query', query);
-    formData.append('file', file);
+// const uploadTxtFile = (query, file) => {
+//     const formData = new FormData();
+//     formData.append('query', query);
+//     formData.append('file', file);
 
-    return axiosInstance.post('gpt_call_with_files/', formData, {
-        headers: {
-            'Content-Type': 'multipart/form-data',
-        },
-    });
-}
+//     return axiosInstance.post('gpt_call_with_files/', formData, {
+//         headers: {
+//             'Content-Type': 'multipart/form-data',
+//         },
+//     });
+// }
 
 const api = {
     testReceive,
     getGPTResponse,
-    uploadTxtFile,
+    createChatSession,
+    // uploadTxtFile,
 };
 
 export default api; 
