@@ -36,24 +36,25 @@ const getChatSession = (chatSessionId) => {
 }
 
 // Upload a .txt file along with an optional query
-// const uploadTxtFile = (query, file) => {
-//     const formData = new FormData();
-//     formData.append('query', query);
-//     formData.append('file', file);
+const uploadTxtFile = (query, chatSessionId, file) => {
+    const formData = new FormData();
+    formData.append('query', query);
+    formData.append('chat_session_id', chatSessionId);
+    formData.append('file', file);
 
-//     return axiosInstance.post('gpt_call_with_files/', formData, {
-//         headers: {
-//             'Content-Type': 'multipart/form-data',
-//         },
-//     });
-// }
+    return axiosInstance.post('gpt_call_with_files/', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+}
 
 const api = {
     testReceive,
     getGPTResponse,
     createChatSession,
     getChatSession,
-    // uploadTxtFile,
+    uploadTxtFile,
 };
 
 export default api; 

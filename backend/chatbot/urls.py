@@ -6,5 +6,5 @@ urlpatterns = [
     path('gpt_call/', views.chatbot_call),
     path('create_chat_session/', views.create_chat_session),
     path('get_chat_session/', views.get_chat_session),
-    # path('gpt_call_with_files/', views.chatbot_call_with_files),
+    path('gpt_call_with_files/', views.chatbot_call_with_files),
 ]

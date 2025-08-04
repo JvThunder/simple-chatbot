@@ -22,17 +22,25 @@ def get_chat_session_id():
     }
     return chat_session_id
 
-def gpt_call(query, chat_session_id):
+def gpt_call(query, chat_session_id, context=None):
     if chat_session_id not in chat_sessions_dict:
         return {"error": "Chat session not found"}
 
+    # Append only the user query (without additional context) to the persistent chat history
     chat_sessions_dict[chat_session_id]["message_history"].append(
         {"role": "user", "content": query}
     )
 
+    # Build the messages list that will be sent to the model
+    messages_for_call = chat_sessions_dict[chat_session_id]["message_history"].copy()
+
+    # If extra context (e.g. file content) is provided, include it for this single call
+    if context:
+        messages_for_call.append({"role": "user", "content": f"Additional context from user:\n{context}"})
+
     response = client.chat.completions.create(
         model="gpt-4o-mini",
-        messages=chat_sessions_dict[chat_session_id]["message_history"],
+        messages=messages_for_call,
         max_tokens=1000,
         temperature=0.7,
     )

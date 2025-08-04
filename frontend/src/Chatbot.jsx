@@ -7,6 +7,7 @@ function Chatbot() {
     const [query, setQuery] = useState("");
     const [MessageHistory, setMessageHistory] = useState([]);
     const [chatSessionId, setChatSessionId] = useState("");
+    const [file, setFile] = useState(null);
     const effectRan = useRef(false);
 
     const callBackend = async () => {
@@ -30,6 +31,29 @@ function Chatbot() {
             }
         } catch (err) {
             console.error("Error calling the backend:", err);
+        }
+    }
+
+    const callGPTWithFile = async () => {
+        if (!file) {
+            console.error("No file selected");
+            return;
+        }
+        try {
+            const response = await api.uploadTxtFile(query, chatSessionId, file);
+            if (response.data && response.data.message) {
+                setBotResponse(response.data.message);
+                setQuery("");
+                setFile(null);
+            }
+        } catch (err) {
+            console.error("Error uploading the file:", err);
+        }
+    }
+
+    const handleFileChange = (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setFile(e.target.files[0]);
         }
     }
 
@@ -82,9 +106,12 @@ function Chatbot() {
                     <ChatComponent key={index} msg={msg} />
                 ))}
             </div>
-            <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} />
+            <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Type your query here" />
             <button onClick={() => callGPT()}>Send</button>
             <p>Chat session id: {chatSessionId}</p>
+            <br />
+            <input type="file" accept=".txt" onChange={handleFileChange} />
+            <button onClick={() => callGPTWithFile()} disabled={!file}>Send with File</button>
         </div>
     );
 }
