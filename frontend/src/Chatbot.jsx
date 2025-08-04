@@ -42,7 +42,7 @@ function Chatbot() {
         try {
             const response = await api.uploadTxtFile(query, chatSessionId, file);
             if (response.data && response.data.message) {
-                setBotResponse(response.data.message);
+                setMessageHistory(response.data.message)
                 setQuery("");
                 setFile(null);
             }

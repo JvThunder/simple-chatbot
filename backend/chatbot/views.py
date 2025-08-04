@@ -1,7 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
-from chatbot.gpt import gpt_call, get_chat_session_id
+from chatbot.gpt import gpt_call, get_chat_session_id, get_chat_session_message_history
 
 # Create your views here.
 def backend_test(request):
@@ -30,7 +30,7 @@ def chatbot_call(request):
             
             gpt_response = gpt_call(data["query"], data["chat_session_id"])
             return JsonResponse({
-                "message": gpt_response[1:]
+                "message": gpt_response
             })
     except Exception as e:
         print("Error:", e)
@@ -48,6 +48,18 @@ def create_chat_session(request):
         print("Error:", e)
         return HttpResponse(status=500)
 
+@csrf_exempt
+def get_chat_session(request):
+    try:
+        if request.method == 'GET':
+            chat_session_id = request.GET.get('chat_session_id')
+            message_history = get_chat_session_message_history(chat_session_id)
+            return JsonResponse({
+                "message_history": message_history
+            })
+    except Exception as e:
+        print("Error:", e)
+        return HttpResponse(status=500)
     
 @csrf_exempt
 def chatbot_call_with_files(request):
